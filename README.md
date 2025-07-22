@@ -7,6 +7,7 @@ The project aims to achieve the following objectives:
 - **Debugging**: Simplify the process of identifying and resolving issues in Triton kernels, particularly differences across Triton versions.
 - **Optimization**: Enables users to experiment with Triton programs and observe the resulting assembly to identify optimization opportunities.
 
+![Screenshot](docs/screenshots/main.png)
 
 ## Features
 **Online Compilation and Inspection**: Compile Triton kernels online and view various intermediate representations in your browser:

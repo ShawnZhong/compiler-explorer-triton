@@ -21,7 +21,7 @@ The project aims to achieve the following objectives:
 Support for dumping and diffing the optimization pipeline for MLIR, enabling detailed analysis of the compilation process.
 
 **Support for Multiple Versions and Backends**:
-- CUDA: v2.3.0, v2.3.1, v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1
+- Nvidia: v2.3.0, v2.3.1, v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1
 - AMD: v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1
 
 **Diffing Output**:

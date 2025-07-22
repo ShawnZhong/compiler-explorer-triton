@@ -1,6 +1,6 @@
 # Triton Support in Compiler Explorer
 
-This [project](https://github.com/ShawnZhong/compiler-explorer-triton) integrates [Triton](triton-lang.org), a domain-specific language and compiler for deep learning kernels, into [Compiler Explorer](https://godbolt.org/). This allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
+This [project](https://github.com/ShawnZhong/compiler-explorer-triton) integrates [Triton](triton-lang.org), a domain-specific language and compiler for GPU kernels, into [Compiler Explorer](https://godbolt.org/). This allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
 
 ![Screenshot](docs/screenshots/main.png)
 

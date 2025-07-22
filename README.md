@@ -2,12 +2,12 @@
 
 This project integrates [Triton](triton-lang.org), a domain-specific language and compiler for deep learning kernels, into [Compiler Explorer](https://godbolt.org/). This allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
 
+![Screenshot](docs/screenshots/main.png)
+
 The project aims to achieve the following objectives:
 - **Insights**: Improves the accessibility of Triton development and research by providing a user-friendly interface for exploring and understanding the intricacies of Triton compilation.
 - **Debugging**: Simplify the process of identifying and resolving issues in Triton kernels, particularly differences across Triton versions.
 - **Optimization**: Enables users to experiment with Triton programs and observe the resulting assembly to identify optimization opportunities.
-
-![Screenshot](docs/screenshots/main.png)
 
 ## Features
 **Online Compilation and Inspection**: Compile Triton kernels online and view various intermediate representations in your browser:

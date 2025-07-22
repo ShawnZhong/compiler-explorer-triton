@@ -155,6 +155,22 @@ Triton requires a Tensor in GPU memory to be passed as an argument to the kernel
 
 However, we should assume that the deployment environment does not necessarily have a GPU. To address this challenge, we use [fake tensor](https://docs.pytorch.org/docs/stable/torch.compiler_fake_tensor.html) developed by the PyTorch team as part of TorchDynamo. A fake tensor behaves like a normal tensor but does not have a real memory allocation and is only used for compilation purposes. This approach removes the dependency on a GPU and makes it more efficient by saving memory consumption.
 
+## FAQ
+
+**Is auto-tuning supported?**
+
+Yes and no. Since we only compile the kernel without executing it, auto-tuning cannot  determine the optimal kernel configuration. However, you can still write `@triton.autotune` in your code and see the ouput, which can be useful for debugging and understanding the impact of different configurations on the generated assembly.
+
+**Where are the Triton packages sourced from?**
+
+The Triton packages are sourced from the PyPI package index (https://pypi.org/project/triton). These are the same packages you would receive when executing the command `pip install triton==x.y.z`.
+Once the nightly build becomes available (refer to [issue #5967](https://github.com/triton-lang/triton/issues/5967)), it will also be supported.
+
+
+**Is source mapping among IRs supported?**
+
+Source mapping is implemented from Python source code to all MLIR dialects and GPU assembly. The source locations among IRs are derived from the Python source code. Due to constraints in Compiler Explorer, direct source mapping between different IRs (e.g., `USE_IR_LOC={ttir,ttgir}`) is not easily implementable.
+
 
 ## Contact
 

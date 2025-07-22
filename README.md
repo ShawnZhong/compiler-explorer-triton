@@ -132,11 +132,10 @@ A key challenge was to enable Ahead-of-Time (AOT) compilation of Triton kernels 
 
 **Solution.** To address these challenges, we mocked the `CompiledKernel` and `GPUDriver` classes to bypass the kernel execution step.
 
-- `CompiledKernel` is a handle to a compiled kernel ready for execution. It is created by `torch.compile`, and subsecuqnelty used by `JITFunction.run` to launch the kernel. We mocked `CompiledKernel` using `unittest.mock.MagicMock` to create a no-op class. This allows us to bypass the kernel execution step and focus on the compilation process.
+- `CompiledKernel` is a handle to a compiled kernel ready for execution. It is created by `torch.compile`, and subsecuqnelty used by `JITFunction.run` to launch the kernel. We mocked `CompiledKernel` using `unittest.mock.MagicMock` to create a no-op class. This allows us to bypass the kernel execution step while still enabling correct interaction of this class with other components.
 
 
-- `GPUDriver`, the class responsible for executing the kernel, is also mocked as a no-op, except for `get_current_target`, which is used to determine the current GPU target, and `get_benchmarker`, which is used in auto-tuning. This prevents the loading of the CUDA/ROCm driver, which is unnecessary for compilation purposes and likely unavailable in the deployment environment.
-
+- `GPUDriver`, the class responsible for executing the kernel, is also mocked as a no-op, except for `get_current_target`, which is used to determine the current GPU target, and `get_benchmarker`, which is used in auto-tuning. We set our mock driver with `triton.runtime.driver.set_active`. This prevents the loading of the CUDA/ROCm driver, which is unnecessary for compilation purposes and likely unavailable in the deployment environment.
 
 ### How to Dump the Intermediate Compilation Steps
 

@@ -1,6 +1,6 @@
 # Triton Support in Compiler Explorer
 
-This project integrates [Triton](triton-lang.org), a domain-specific language and compiler for deep learning kernels, into [Compiler Explorer](https://godbolt.org/). This allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
+This [project](https://github.com/ShawnZhong/compiler-explorer-triton) integrates [Triton](triton-lang.org), a domain-specific language and compiler for GPU kernels, into [Compiler Explorer](https://godbolt.org/) (PR [#7919](https://github.com/compiler-explorer/compiler-explorer/pull/7919)). This allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
 
 ![Screenshot](docs/screenshots/main.png)
 
@@ -34,18 +34,18 @@ Support for dumping and diffing the optimization pipeline for MLIR, enabling det
 ## Tutorials
 
 > [!NOTE]
-> The Triton support is currently under the process of upstreaming to Compiler Explorer. Please check the [pull request](https://github.com/compiler-explorer/compiler-explorer/pull/7919) for the latest status.
+> Triton support is currently under the process of upstreaming to Compiler Explorer. Please check the [pull request](https://github.com/compiler-explorer/compiler-explorer/pull/7919) for the latest status.
 >
 > In the meantime, please refer to the [Deploy Locally](#deploy-locally) section for a local deployment.
 
-### Explore Triton Kernels
+### 1. Explore Triton Kernels
 
 To begin, select `Triton` as the language from the language dropdown. An example file for `store_kernel` and `add_kernel` will automatically load on the left. You can modify this file or replace it with your own Triton code. Compiler Explorer will automatically recompile the code and display the resulting assembly.
 (Note: A Device Viewer window will open, which can be ignored for now.)
 
 ![Nvidia Assembly](docs/screenshots/nvidia-assembly.png)
 
-### Compiler Versions and Flags
+### 2.  Compiler Versions and Flags
 
 In the compiler version dropdown, you can choose different Triton versions for Nvidia and AMD to observe the differences in the assembly output.
 
@@ -53,7 +53,7 @@ Additionally, you can specify a compiler flag next to the version dropdown. For 
 
 ![AMD Assembly](docs/screenshots/amd-assembly.png)
 
-### A Dive into Intermediate Compilation Steps
+### 3. A Dive into Intermediate Compilation Steps
 
 To explore the intermediate compilation steps, use the Device Viewer tab, which opens by default. If it is closed, you can reopen it by clicking the `+ Add New...` button in the assembly tab and selecting `Device` from the dropdown (see below).
 
@@ -63,7 +63,7 @@ In the Device Viewer, you can view the intermediate compilation steps, from TTIR
 
 ![Device Viewer 2](docs/screenshots/ir-2.png)
 
-### [Advanced] A Deeper Dive into the MLIR Optimization Pipeline
+### 4. [Advanced] A Deeper Dive into the MLIR Optimization Pipeline
 
 For advanced users or Triton developers, you can explore the MLIR optimization pipeline by clicking the `+ Add New...` button in the assembly tab and selecting `Opt Pipeline` from the dropdown.
 
@@ -73,7 +73,7 @@ Note: The optimization pipeline is available for Triton v3.3.0 and above.
 
 ![MLIR Passes](docs/screenshots/passes.png)
 
-### [Advanced] Diffing Output Across Triton Versions
+### 5. [Advanced] Diffing Output Across Triton Versions
 
 To compare differences across Triton versions, first add a new compiler by clicking the `+ Add New...` button in the source tab (not the assembly tab). Then, select the Triton version you wish to compare from the dropdown menu.
 

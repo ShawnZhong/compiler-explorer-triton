@@ -34,7 +34,7 @@ Support for dumping and diffing the optimization pipeline for MLIR, enabling det
 ## Tutorials
 
 > [!NOTE]
-> The Triton support is currently under the process of upstreaming to Compiler Explorer. Please check the [pull request](https://github.com/compiler-explorer/compiler-explorer/pull/7919) for the latest status.
+> Triton support is currently under the process of upstreaming to Compiler Explorer. Please check the [pull request](https://github.com/compiler-explorer/compiler-explorer/pull/7919) for the latest status.
 >
 > In the meantime, please refer to the [Deploy Locally](#deploy-locally) section for a local deployment.
 

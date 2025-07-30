@@ -1,170 +1,179 @@
-[![Build Status](https://github.com/compiler-explorer/compiler-explorer/workflows/Compiler%20Explorer/badge.svg)](https://github.com/compiler-explorer/compiler-explorer/actions?query=workflow%3A%22Compiler+Explorer%22)
-[![codecov](https://codecov.io/gh/compiler-explorer/compiler-explorer/branch/main/graph/badge.svg)](https://codecov.io/gh/compiler-explorer/compiler-explorer)
+# Triton Support in Compiler Explorer
 
-[![logo](public/logos/assembly.png)](https://godbolt.org/)
+This [project](https://github.com/ShawnZhong/compiler-explorer-triton) integrates [Triton](triton-lang.org), a domain-specific language and compiler for GPU kernels, into [Compiler Explorer](https://godbolt.org/) (PR [#7919](https://github.com/compiler-explorer/compiler-explorer/pull/7919)). This allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
 
-# Compiler Explorer
+![Screenshot](docs/screenshots/main.png)
 
-Compiler Explorer is an interactive compiler exploration website. Edit code in C, C++, C#, F#, Rust, Go, D, Haskell, Swift, Pascal,
-[ispc](https://ispc.github.io/), Python, Java, or any of the other
-[30+ supported languages](https://godbolt.org/api/languages), and see how that code looks after being
-compiled in real time.
+The project aims to achieve the following objectives:
+- **Insights**: Improves the accessibility of Triton development and research by providing a user-friendly interface for exploring and understanding the intricacies of Triton compilation.
+- **Debugging**: Simplify the process of identifying and resolving issues in Triton kernels, particularly differences across Triton versions.
+- **Optimization**: Enables users to experiment with Triton programs and observe the resulting assembly to identify optimization opportunities.
 
-[Bug Report](https://github.com/compiler-explorer/compiler-explorer/issues/new?assignees=&labels=bug&projects=&template=bug_report.yml&title=%5BBUG%5D%3A+)
-·
-[Compiler Request](https://github.com/compiler-explorer/compiler-explorer/issues/new?assignees=&labels=request%2Cnew-compilers&projects=&template=compiler_request.yml&title=%5BCOMPILER+REQUEST%5D%3A+)
-·
-[Feature Request](https://github.com/compiler-explorer/compiler-explorer/issues/new?assignees=&labels=request&projects=&template=feature_request.yml&title=%5BREQUEST%5D%3A+)
-·
-[Language Request](https://github.com/compiler-explorer/compiler-explorer/issues/new?assignees=&labels=request%2Cnew-language&projects=&template=language_request.yml&title=%5BLANGUAGE+REQUEST%5D%3A+)
-·
-[Library Request](https://github.com/compiler-explorer/compiler-explorer/issues/new?assignees=&labels=request%2Cnew-libs&projects=&template=library_request.yml&title=%5BLIB+REQUEST%5D%3A+)
-· [Report Vulnerability](https://github.com/compiler-explorer/compiler-explorer/security/advisories/new)
+## Features
+**Online Compilation and Inspection**: Compile Triton kernels online and view various intermediate representations in your browser:
+- TTIR (Triton MLIR)
+- TTGIR (Triton GPU MLIR)
+- LLVM IR
+- PTX/AMDGCN (GPU Assembly for Nvidia/AMD GPUs)
+- SASS (Low-level Nvidia GPU Assembly)
 
-# Overview
+**MLIR Pass Visualization**:
+Support for dumping and diffing the optimization pipeline for MLIR, enabling detailed analysis of the compilation process.
 
-Multiple compilers are supported for each language, many different tools and visualizations are available, and the UI
-layout is configurable (thanks to [GoldenLayout](https://www.golden-layout.com/)).
+**Support for Multiple Versions and Backends**:
+- Nvidia: v2.3.0, v2.3.1, v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1
+- AMD: v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1
 
-Try out at [godbolt.org](https://godbolt.org), or [run your own local instance](#running-a-local-instance). An overview
-of what the site lets you achieve, why it's useful, and how to use it is
-[available here](docs/WhatIsCompilerExplorer.md).
+**Diffing Output**:
+- Across Triton versions: Identify changes with Triton version updates.
+- Across source codes: Understand the impact of code changes on the compilation process.
+- Across architectures: Compare the differences in generated assembly for different GPU architectures.
 
-**Compiler Explorer** follows a [Code of Conduct](CODE_OF_CONDUCT.md) which aims to foster an open and welcoming
-environment.
+**Source Mapping**: Source mapping is implemented from Python source code to all MLIR dialects and GPU assembly.
 
-**Compiler Explorer** was started in 2012 to show how C++ constructs are translated to assembly code. It started as a
-`tmux` session with `vi` running in one pane and `watch gcc -S foo.cc -o -` running in the other.
+## Tutorials
 
-Since then, it has become a public website serving over
-[3,000,000 compilations per week](https://stats.compiler-explorer.com).
+> [!NOTE]
+> Triton support is currently under the process of upstreaming to Compiler Explorer. Please check the [pull request](https://github.com/compiler-explorer/compiler-explorer/pull/7919) for the latest status.
+>
+> In the meantime, please refer to the [Deploy Locally](#deploy-locally) section for a local deployment.
 
-You can financially support [this project on Patreon](https://patreon.com/mattgodbolt),
-[GitHub](https://github.com/sponsors/mattgodbolt/),
-[Paypal](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=KQWQZ7GPY2GZ6&item_name=Compiler+Explorer+development&currency_code=USD&source=url),
-or by buying cool gear on the [Compiler Explorer store](https://shop.compiler-explorer.com).
+### 1. Explore Triton Kernels
 
-## Using Compiler Explorer
+To begin, select `Triton` as the language from the language dropdown. An example file for `store_kernel` and `add_kernel` will automatically load on the left. You can modify this file or replace it with your own Triton code. Compiler Explorer will automatically recompile the code and display the resulting assembly.
+(Note: A Device Viewer window will open, which can be ignored for now.)
 
-### FAQ
+![Nvidia Assembly](docs/screenshots/nvidia-assembly.png)
 
-There is now a FAQ section [in the repository wiki](https://github.com/compiler-explorer/compiler-explorer/wiki/FAQ). If
-your question is not present, please contact us as described below, so we can help you. If you find that the FAQ is
-lacking some important point, please feel free to contribute to it and/or ask us to clarify it.
+### 2.  Compiler Versions and Flags
 
-### Videos
+In the compiler version dropdown, you can choose different Triton versions for Nvidia and AMD to observe the differences in the assembly output.
 
-Several videos showcase some features of Compiler Explorer:
+Additionally, you can specify a compiler flag next to the version dropdown. For instance, you can add `--arch gfx950` to the AMD compiler flag to compile the code for GFX950 GPUs. The default flags can be found by clicking the green checkmark button in between.
 
-- [Compiler Explorer 2023: What's New?](https://www.youtube.com/watch?v=Ey0H79z_pco): Presentation for CppNorth 2023.
-- [Presentation for CppCon 2019 about the project](https://www.youtube.com/watch?v=kIoZDUd5DKw)
-- [Older 2 part series of videos](https://www.youtube.com/watch?v=4_HL3PH4wDg) which go into a bit more detail into the
-  more obscure features.
-- [Just Enough Assembly for Compiler Explorer](https://youtu.be/QLolzolunJ4): Practical introduction to Assembly with a
-  focus on the usage of Compiler Explorer, from CppCon 2021.
-- [Playlist: Compiler Explorer](https://www.youtube.com/playlist?list=PL2HVqYf7If8dNYVN6ayjB06FPyhHCcnhG): A collection
-  of videos discussing Compiler Explorer; using it, installing it, what it's for, etc.
+![AMD Assembly](docs/screenshots/amd-assembly.png)
 
-A [Road map](docs/Roadmap.md) is available which gives a little insight into the future plans for **Compiler Explorer**.
+### 3. A Dive into Intermediate Compilation Steps
 
-## Developing
+To explore the intermediate compilation steps, use the Device Viewer tab, which opens by default. If it is closed, you can reopen it by clicking the `+ Add New...` button in the assembly tab and selecting `Device` from the dropdown (see below).
 
-**Compiler Explorer** is written in [TypeScript](https://www.typescriptlang.org/), on [Node.js](https://nodejs.org/).
+![Device Viewer 1](docs/screenshots/ir-1.png)
 
-Assuming you have a compatible version of `node` installed, on Linux simply running `make` ought to get you up and
-running with an Explorer running on port 10240 on your local machine:
-[http://localhost:10240/](http://localhost:10240/). If this doesn't work for you, please contact us, as we consider it
-important you can quickly and easily get running. Currently, **Compiler Explorer** requires
-[`node` 20 or higher](CONTRIBUTING.md#node-version) installed, either on the path or at `NODE_DIR` (an environment variable or
-`make` parameter).
+In the Device Viewer, you can view the intermediate compilation steps, from TTIR, to TTGIR, to LLVM IR, to PTX/AMDGCN, and finally to SASS. You can also see the configuration file for the current compilation in the `.json` file.
 
-Running with `make EXTRA_ARGS='--language LANG'` will allow you to load `LANG` exclusively, where `LANG` is one for the
-language ids/aliases defined in `lib/languages.ts`. For example, to only run **Compiler Explorer** with C++ support,
-you'd run `make EXTRA_ARGS='--language c++'`. You can supply multiple `--language` arguments to restrict to more than
-one language. The `Makefile` will automatically install all the third-party libraries needed to run; using `npm` to
-install server-side and client-side components.
+![Device Viewer 2](docs/screenshots/ir-2.png)
 
-For development, we suggest using `make dev` to enable some useful features, such as automatic reloading on file changes
-and shorter startup times.
+### 4. [Advanced] A Deeper Dive into the MLIR Optimization Pipeline
 
-You can also use `npm run dev` to run if `make dev` doesn't work on your machine.
+For advanced users or Triton developers, you can explore the MLIR optimization pipeline by clicking the `+ Add New...` button in the assembly tab and selecting `Opt Pipeline` from the dropdown.
 
-When making UI changes, we recommend following the [UI Testing Checklist](docs/TestingTheUi.md) to ensure all components work correctly.
+This will open a new tab displaying the MLIR optimization pipeline. The results are grouped by functions, and you can select the function you want to explore from the dropdown on the top left. You can see the resulting MLIR after each optimization pass, with changes highlighted in green.
 
-Some languages need extra tools to demangle them, e.g. `rust`, `d`, or `haskell`. Such tools are kept separately in the
-[tools repo](https://github.com/compiler-explorer/compiler-explorer-tools).
+Note: The optimization pipeline is available for Triton v3.3.0 and above.
 
-Configuring compiler explorer is achieved via configuration files in the `etc/config` directory. Values are `key=value`.
-Options in a `{type}.local.properties` file (where `{type}` is `c++` or similar) override anything in the
-`{type}.defaults.properties` file. There is a `.gitignore` file to ignore `*.local.*` files, so these won't be checked
-into git, and you won't find yourself fighting with updated versions when you `git pull`. For more information see
-[Adding a Compiler](docs/AddingACompiler.md).
+![MLIR Passes](docs/screenshots/passes.png)
 
-Check [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed information about how you can contribute to **Compiler
-Explorer**, and the [docs](./docs) folder for specific details regarding various things you might want to do, such as
-how to add new compilers or languages to the site.
+### 5. [Advanced] Diffing Output Across Triton Versions
 
-### Running a local instance
+To compare differences across Triton versions, first add a new compiler by clicking the `+ Add New...` button in the source tab (not the assembly tab). Then, select the Triton version you wish to compare from the dropdown menu.
 
-If you want to point it at your own GCC or similar binaries, either edit the `etc/config/LANG.defaults.properties` or
-else make a new one with the name `LANG.local.properties`, substituting `LANG` as needed. `*.local.properties` files
-have the highest priority when loading properties.
+Note: The tabs can become cluttered, so it's recommended to move all tabs to the right and merge them into the same tab group.
 
-If you want to support multiple compilers and languages like [godbolt.org](https://godbolt.org), you can use the
-`bin/ce_install install compilers` command in the [infra](https://github.com/compiler-explorer/infra) project to install
-all or some of the compilers. Compilers installed in this way can be loaded through the configuration in
-`etc/config/*.amazon.properties`. If you need to deploy in a completely offline environment, you may need to remove some
-parts of the configuration that are pulled from `www.godbolt.ms@443`.
+![Version Diffing 1](docs/screenshots/diff-version-1.png)
 
-When running in a corporate setting the URL shortening service can be replaced by an internal one if the default storage
-driver isn't appropriate for your environment. To do this, add a new module in `lib/shortener/myservice.js` and set the
-`urlShortenService` variable in configuration. This module should export a single function, see the
-[tinyurl module](lib/shortener/tinyurl.ts) for an example.
+Next, add a diff view by selecting `Add...` from the dropdown at the top of the page, next to the Compiler Explorer logo. In the diff tab, choose the two versions you want to compare.
 
-### RESTful API
+![Version Diffing 2](docs/screenshots/diff-version-2.png)
 
-There's a simple restful API that can be used to do compiles to asm and to list compilers.
+By default, the tab will compare the assembly output, but you can also compare other files.
 
-You can find the API documentation [here](docs/API.md).
+![Version Diffing 3](docs/screenshots/diff-version-3.png)
 
-## Contact us
+## Deploy Locally
+1. Clone https://github.com/ShawnZhong/compiler-explorer-infra.git
+2. Install Triton to `/opt/compiler-explorer/triton`:
+    ```sh
+    $ cd compiler-explorer-infra
+    $ ./bin/ce_install install triton
+    $ ls /opt/compiler-explorer/triton
+    # v2.3.0  v2.3.1  v3.0.0  v3.1.0  v3.2.0  v3.3.0  v3.3.1
+    ```
+3. Clone https://github.com/ShawnZhong/compiler-explorer-triton.git
+4. Run Compiler Explorer
+    ```sh
+    make EXTRA_ARGS='--language triton' dev
+    ```
+5. Enjoy
 
-We run a [Compiler Explorer Discord](https://discord.gg/B5WacA7), which is a place to discuss using or developing
-Compiler Explorer. We also have a presence on the [cpplang](https://cppalliance.org/slack/) Slack channel
-`#compiler_explorer` and we have
-[a public mailing list](https://groups.google.com/forum/#!forum/compiler-explorer-discussion).
 
-There's a development channel on the discord, and also a
-[development mailing list](https://groups.google.com/forum/#!forum/compiler-explorer-development).
+## Implementation
 
-Feel free to raise an issue on [github](https://github.com/compiler-explorer/compiler-explorer/issues) or
-[email Matt directly](mailto:matt@godbolt.org) for more help.
+### Overview
 
-## Official domains
+To implement this integration, several components were developed:
 
-Following are the official domains for Compiler Explorer:
+- Triton Wrapper ([`triton_wrapper.py`](etc/scripts/triton_wrapper.py)): Compiles Triton kernels without executing them, eliminating the need for a GPU in the exploration environment. It generates compiler dumps and consolidates results for display in Compiler Explorer. Meticulous handling of cross-version differences in Triton's internal APIs was implemented to ensure broad compatibility.
 
-- https://godbolt.org/
-- https://godbo.lt/
-- https://compiler-explorer.com/
+- Compiler Explorer Integration ([`triton.ts`](lib/compilers/triton.ts)): Manages the frontend integration with Compiler Explorer, communicating between the user interface and Triton wrapper.
 
-The domains allow arbitrary subdomains, e.g., https://foo.godbolt.org/, which is convenient since each subdomain has an
-independent local state. Also, language subdomains such as https://rust.compiler-explorer.com/ will load with that
-language already selected.
+- MLIR Parser ([`asm-parser-mlir.ts`](lib/parsers/asm-parser-mlir.ts)): Parses MLIR assembly output with precise source location information, enabling the display of TTIR and TTGIR in the Device Viewer.
 
-## Credits
+- MLIR Pass Dump Parser ([`mlir-pass-dump-parser.ts`](lib/parsers/mlir-pass-dump-parser.ts)): Parses MLIR optimization pass dumps for stage-by-stage diffing and visualization of the MLIR optimization pipeline.
 
-**Compiler Explorer** is maintained by the awesome people listed in the [AUTHORS](AUTHORS.md) file.
+### How to Compile Triton Kernels without running them (AOT Compilation)
 
-We would like to thank the contributors listed in the [CONTRIBUTORS](CONTRIBUTORS.md) file, who have helped shape
-**Compiler Explorer**.
+A key challenge was to enable Ahead-of-Time (AOT) compilation of Triton kernels without requiring a GPU for execution.
 
-We would also like to especially thank these people for their contributions to **Compiler Explorer**:
+**Background.** Triton kernels are compiled and executed in the following steps:
 
-- [Gabriel Devillers](https://github.com/voxelf) (_while working for [Kalray](http://www.kalrayinc.com/)_)
-- [Johan Engelen](https://github.com/JohanEngelen)
-- [Joshua Sheard](https://github.com/jsheard)
-- [Andrew Pardoe](https://github.com/AndrewPardoe)
+- The `@triton.jit` decorator creates a `JITFunction` object, but the actual compilation occurs when the kernel is invoked. At this stage, we lack access to the arguments used in kernel specialization (e.g., for constant propagation).
+- Kernel compilation and execution typically happen when `h = kernel[grid](args)` is called (`JITFunction.run` is executed internally), and there is no clear separation between these two steps.
+- `JITFunction.run` subsequently calls `triton.compile`, a low-level function that performs kernel compilation. However, it is too low-level for use in Compiler Explorer, as it requires altering user code to manually provide signatures and constants, which is not user-friendly.
 
-Many [amazing sponsors](https://godbolt.org/#sponsors), both individuals and companies, have helped fund and promote
-Compiler Explorer.
+**Solution.** To address these challenges, we mocked the `CompiledKernel` and `GPUDriver` classes to bypass the kernel execution step.
+
+- `CompiledKernel` is a handle to a compiled kernel ready for execution. It is created by `torch.compile`, and subsecuqnelty used by `JITFunction.run` to launch the kernel. We mocked `CompiledKernel` using `unittest.mock.MagicMock` to create a no-op class. This allows us to bypass the kernel execution step while still enabling correct interaction of this class with other components.
+
+
+- `GPUDriver`, the class responsible for executing the kernel, is also mocked as a no-op, except for `get_current_target`, which is used to determine the current GPU target, and `get_benchmarker`, which is used in auto-tuning. We set our mock driver with `triton.runtime.driver.set_active`. This prevents the loading of the CUDA/ROCm driver, which is unnecessary for compilation purposes and likely unavailable in the deployment environment.
+
+### How to Dump the Intermediate Compilation Steps
+
+During the development process, multiple methods were attempted to dump the intermediate compilation steps:
+
+1. Setting environment variables `TRITON_KERNEL_DUMP` and `TRITON_DUMP_DIR`: These were introduced in Triton v3.2.0 (commit [ca469d7](https://github.com/triton-lang/triton/commit/ca469d7b6b6def316b5f5ee6ad2bd19dcb840bd8)) and are not available in earlier versions.
+
+2. Patching `triton.runtime.cache.default_cache_dir`: This location is overridden by the `TRITON_DUMP_DIR` environment variable. However, this method is somewhat hacky, and we lack control over the content written to the directory. (Triton dumps the compiled kernels into a folder with a random name.)
+
+3. Using hooks `triton.knobs.runtime.{jit_post_compile_hook,launch_enter_hook}`: This approach is used by [TritonParse](https://github.com/pytorch-labs/tritonparse), but the hooks are unavailable in older versions (see commits [0e92672](https://github.com/triton-lang/triton/commit/0e9267202532ed1709dcc12c636220cf239dc377) and [8505252](https://github.com/triton-lang/triton/commit/850525276426fb9814399a8e0ee8fdf744229b02)).
+
+4. [Current Approach] Registering a new `CacheManager` in Triton to dump files to a specific location: This approach is used in the current implementation. The `CacheManager` interface has been available in all versions supported by Compiler Explorer. This method allows us to control the content of the dumped files and their storage location.
+
+### How to Prepare the Tensor Arguments for Compilation
+
+Triton requires a Tensor in GPU memory to be passed as an argument to the kernel; otherwise, it will throw an error like "Pointer argument (at 0) cannot be accessed from Triton (cpu tensor?)". Therefore, tensors must be prepared in GPU memory before calling the Triton kernel (e.g., `torch.rand(..., device="cuda")`).
+
+However, we should assume that the deployment environment does not necessarily have a GPU. To address this challenge, we use [fake tensor](https://docs.pytorch.org/docs/stable/torch.compiler_fake_tensor.html) developed by the PyTorch team as part of TorchDynamo. A fake tensor behaves like a normal tensor but does not have a real memory allocation and is only used for compilation purposes. This approach removes the dependency on a GPU and makes it more efficient by saving memory consumption.
+
+## FAQ
+
+**Is auto-tuning supported?**
+
+Yes and no. Since we only compile the kernel without executing it, auto-tuning cannot  determine the optimal kernel configuration. However, you can still write `@triton.autotune` in your code and see the ouput, which can be useful for debugging and understanding the impact of different configurations on the generated assembly.
+
+**Where are the Triton packages sourced from?**
+
+The Triton packages are sourced from the PyPI package index (https://pypi.org/project/triton). These are the same packages you would receive when executing the command `pip install triton==x.y.z`.
+Once the nightly build becomes available (refer to [issue #5967](https://github.com/triton-lang/triton/issues/5967)), it will also be supported.
+
+
+**Is source mapping among IRs supported?**
+
+Source mapping is implemented from Python source code to all MLIR dialects and GPU assembly. The source locations among IRs are derived from the Python source code. Due to constraints in Compiler Explorer, direct source mapping between different IRs (e.g., `USE_IR_LOC={ttir,ttgir}`) is not easily implementable.
+
+
+## Contact
+
+We're excited to see how this project can help the Triton community and look forward to hearing your thoughts and suggestions.
+
+For bugs, questions, or feature requests, please use the [GitHub issue tracker](https://github.com/ShawnZhong/compiler-explorer-triton/issues).

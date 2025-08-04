@@ -40,6 +40,11 @@ To begin, select `Triton` as the language from the language dropdown. An example
 
 ![Nvidia Assembly](docs/screenshots/nvidia-assembly.png)
 
+> [!NOTE]
+> Since the compilation occurs on a shared public server, it may take a few seconds to compile and load the assembly.
+> It has been observed that a local deployment significantly speeds up the process. See [Deploy Locally](https://github.com/ShawnZhong/compiler-explorer-triton/#deploy-locally) for more information.
+
+
 ### 2. Compiler Versions and Flags (https://godbolt.org/z/6Tx8697hx)
 
 In the compiler version dropdown, you can choose different Triton versions for Nvidia and AMD to observe the differences in the assembly output.

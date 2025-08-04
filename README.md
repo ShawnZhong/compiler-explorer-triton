@@ -1,6 +1,6 @@
 # Triton Support in Compiler Explorer
 
-This [project](https://github.com/ShawnZhong/compiler-explorer-triton) integrates [Triton](triton-lang.org), a domain-specific language and compiler for GPU kernels, into [Compiler Explorer](https://godbolt.org/) (PR [#7919](https://github.com/compiler-explorer/compiler-explorer/pull/7919)). This allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
+This [project](https://github.com/ShawnZhong/compiler-explorer-triton) integrates [Triton](triton-lang.org), a domain-specific language and compiler for GPU kernels, into [Compiler Explorer](https://godbolt.org/). It allows users to interactively explore and debug the assembly output of Triton kernels, visualize intermediate compilation steps, and understand the MLIR optimization pipeline.
 
 ![Screenshot](docs/screenshots/main.png)
 
@@ -21,8 +21,8 @@ The project aims to achieve the following objectives:
 Support for dumping and diffing the optimization pipeline for MLIR, enabling detailed analysis of the compilation process.
 
 **Support for Multiple Versions and Backends**:
-- Nvidia: v2.3.0, v2.3.1, v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1
-- AMD: v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1
+- Nvidia: v2.3.0, v2.3.1, v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1, v3.4.0
+- AMD: v3.0.0, v3.1.0, v3.2.0, v3.3.0, v3.3.1, v3.4.0
 
 **Diffing Output**:
 - Across Triton versions: Identify changes with Triton version updates.
@@ -33,19 +33,14 @@ Support for dumping and diffing the optimization pipeline for MLIR, enabling det
 
 ## Tutorials
 
-> [!NOTE]
-> Triton support is currently under the process of upstreaming to Compiler Explorer. Please check the [pull request](https://github.com/compiler-explorer/compiler-explorer/pull/7919) for the latest status.
->
-> In the meantime, please refer to the [Deploy Locally](#deploy-locally) section for a local deployment.
+### 1. Explore Triton Kernels (https://godbolt.org/z/6PEv4WoWs)
 
-### 1. Explore Triton Kernels
-
-To begin, select `Triton` as the language from the language dropdown. An example file for `store_kernel` and `add_kernel` will automatically load on the left. You can modify this file or replace it with your own Triton code. Compiler Explorer will automatically recompile the code and display the resulting assembly.
-(Note: A Device Viewer window will open, which can be ignored for now.)
+To begin, select `Triton` as the language from the language dropdown. An example file for `add_kernel` will automatically load on the left. You can modify this file or replace it with your own Triton code. Compiler Explorer will automatically recompile the code and display the resulting assembly.
+(Note: A Device Viewer tab will open, which can be ignored for now.)
 
 ![Nvidia Assembly](docs/screenshots/nvidia-assembly.png)
 
-### 2.  Compiler Versions and Flags
+### 2. Compiler Versions and Flags (https://godbolt.org/z/6Tx8697hx)
 
 In the compiler version dropdown, you can choose different Triton versions for Nvidia and AMD to observe the differences in the assembly output.
 
@@ -53,7 +48,7 @@ Additionally, you can specify a compiler flag next to the version dropdown. For 
 
 ![AMD Assembly](docs/screenshots/amd-assembly.png)
 
-### 3. A Dive into Intermediate Compilation Steps
+### 3. A Dive into Intermediate Compilation Steps (https://godbolt.org/z/134M4Kx1G)
 
 To explore the intermediate compilation steps, use the Device Viewer tab, which opens by default. If it is closed, you can reopen it by clicking the `+ Add New...` button in the assembly tab and selecting `Device` from the dropdown (see below).
 
@@ -63,7 +58,7 @@ In the Device Viewer, you can view the intermediate compilation steps, from TTIR
 
 ![Device Viewer 2](docs/screenshots/ir-2.png)
 
-### 4. [Advanced] A Deeper Dive into the MLIR Optimization Pipeline
+### 4. [Advanced] A Deeper Dive into the MLIR Optimization Pipeline (https://godbolt.org/z/dsaTje636)
 
 For advanced users or Triton developers, you can explore the MLIR optimization pipeline by clicking the `+ Add New...` button in the assembly tab and selecting `Opt Pipeline` from the dropdown.
 
@@ -73,7 +68,7 @@ Note: The optimization pipeline is available for Triton v3.3.0 and above.
 
 ![MLIR Passes](docs/screenshots/passes.png)
 
-### 5. [Advanced] Diffing Output Across Triton Versions
+### 5. [Advanced] Diffing Output Across Triton Versions (https://godbolt.org/z/4TP8h7sh7)
 
 To compare differences across Triton versions, first add a new compiler by clicking the `+ Add New...` button in the source tab (not the assembly tab). Then, select the Triton version you wish to compare from the dropdown menu.
 
@@ -90,21 +85,48 @@ By default, the tab will compare the assembly output, but you can also compare o
 ![Version Diffing 3](docs/screenshots/diff-version-3.png)
 
 ## Deploy Locally
-1. Clone https://github.com/ShawnZhong/compiler-explorer-infra.git
-2. Install Triton to `/opt/compiler-explorer/triton`:
+1. Install various Triton versions in `/opt/compiler-explorer/triton`:
+
+    Create the directory:
+
     ```sh
-    $ cd compiler-explorer-infra
-    $ ./bin/ce_install install triton
-    $ ls /opt/compiler-explorer/triton
-    # v2.3.0  v2.3.1  v3.0.0  v3.1.0  v3.2.0  v3.3.0  v3.3.1
+    sudo mkdir -p /opt/compiler-explorer
+    sudo chown $USER /opt/compiler-explorer
     ```
-3. Clone https://github.com/ShawnZhong/compiler-explorer-triton.git
-4. Run Compiler Explorer
+
+    Clone the Compiler Explorer Infra repository and install Triton:
+
+    ```sh
+    git clone https://github.com/compiler-explorer/infra
+    cd infra
+    ./bin/ce_install install triton
+    ```
+
+    Verify the installation:
+
+    ```sh
+    ls /opt/compiler-explorer/triton
+    ```
+    ```
+    v2.3.0  v2.3.1  v3.0.0  v3.1.0  v3.2.0  v3.3.0  v3.3.1  v3.4.0
+    ```
+
+2. Run Compiler Explorer:
+
+    Clone the Compiler Explorer repository:
+
+    ```sh
+    git clone https://github.com/compiler-explorer/compiler-explorer
+    cd compiler-explorer
+    ```
+
+    Build and run Compiler Explorer:
+
     ```sh
     make EXTRA_ARGS='--language triton' dev
     ```
-5. Enjoy
 
+3. Open [`http://localhost:10242/`](http://localhost:10242/) in your browser and enjoy!
 
 ## Implementation
 
